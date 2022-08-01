@@ -29,6 +29,13 @@ const ASPECT_RATIO: f32 = 3.0 / 2.0;
 const WIDTH: u32 = 1200u32;
 const HEIGHT: u32 = (WIDTH as f32 / ASPECT_RATIO) as u32;
 
+struct RaytracerConfig {
+    max_threads: u32,
+    samples_per_pixel: u32,
+    max_bounces: u32,
+    tile_size: u32,
+}
+
 struct Profile {
     total_time: Duration,
     total_bounces: AtomicU64,
@@ -229,9 +236,9 @@ fn random_scene() -> HittableList {
     world
 }
 
-fn start_raytracer() -> RenderBuffer {
-    let samples_per_pixel = 4;
-    let max_depth = 4;
+fn start_raytracer(config: RaytracerConfig) -> RenderBuffer {
+    let samples_per_pixel = config.samples_per_pixel;
+    let max_depth = config.max_bounces;
 
     let mut profile = Arc::new(Profile {
         total_time: Duration::ZERO,
@@ -267,14 +274,14 @@ fn start_raytracer() -> RenderBuffer {
 
     let before = Instant::now();
 
-    let tile_w = 64;
+    let tile_w = config.tile_size;
     let tile_h = tile_w;
 
     let tile_count_x = (WIDTH + tile_w - 1) / tile_w;
     let tile_count_y = (HEIGHT + tile_h - 1) / tile_h;
 
     let jobs_count = Arc::new(AtomicU32::new(0));
-    let max_jobs = 12u32;
+    let max_jobs = config.max_threads;
 
     for y in 0..tile_count_y {
         for x in 0..tile_count_x {
@@ -342,5 +349,11 @@ fn start_raytracer() -> RenderBuffer {
 }
 
 fn main() {
-    start_raytracer();
+    let config = RaytracerConfig {
+        max_threads: 12,
+        tile_size: 64,
+        samples_per_pixel: 512,
+        max_bounces: 8,
+    };
+    start_raytracer(config);
 }
