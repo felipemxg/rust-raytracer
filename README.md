@@ -7,4 +7,4 @@ I've also added a tile-based multithreaded rendering algorithm.
 
 ## Result:
 
-[Result](https://raw.githubusercontent.com/felipemxg/rust-raytracer/main/render.bmp)
+![Result](https://raw.githubusercontent.com/felipemxg/rust-raytracer/main/render.bmp)
