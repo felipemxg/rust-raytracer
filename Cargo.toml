@@ -1,0 +1,17 @@
+[package]
+name = "rust-raytracer"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[profile.release]
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
+debug = 1
+
+[dependencies]
+bmp = "0.5.0"
+libc = "0.2"
